@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TopicServiceTest {
+public class TopicServiceTest {
     @Test
     public void whenTopic() {
         TopicService topicService = new TopicService();
@@ -30,5 +30,15 @@ class TopicServiceTest {
         );
         assertThat(result1.getText()).isEqualTo("temperature=18");
         assertThat(result2.getText()).isEqualTo("");
+    }
+
+    @Test
+    public void whenWrongRequestMethodThenMustBeResponse501() {
+        TopicService topicService = new TopicService();
+        Resp result = topicService.process(
+                new Req("DELETE", "topic", "weather", null)
+        );
+        assertThat(result.getText()).isEqualTo("");
+        assertThat(result.getStatus()).isEqualTo("501");
     }
 }

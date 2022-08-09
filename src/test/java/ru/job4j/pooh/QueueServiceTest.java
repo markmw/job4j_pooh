@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class QueueServiceTest {
+public class QueueServiceTest {
     @Test
     public void whenPostThenGetQueue() {
         QueueService queueService = new QueueService();
@@ -18,5 +18,16 @@ class QueueServiceTest {
                 new Req("GET", "queue", "weather", null)
         );
         assertThat(result.getText()).isEqualTo("temperature=18");
+    }
+
+    @Test
+    public void whenWrongRequestMethodThenMustBeResponse501() {
+        QueueService queueService = new QueueService();
+        Resp result = queueService.process(
+                new Req("DELETE", "queue", "weather", null)
+        );
+        assertThat(result.getText()).isEqualTo("");
+        assertThat(result.getStatus()).isEqualTo("501");
+
     }
 }
