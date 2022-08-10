@@ -5,7 +5,6 @@ public enum ResponseMessage {
     POST("POST"),
     OK("OK"),
     NOT_FOUND("204"),
-    EMPTY(""),
     NOT_IMPL("501");
 
     private String value;

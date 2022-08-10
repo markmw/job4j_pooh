@@ -26,7 +26,7 @@ public class QueueServiceTest {
         Resp result = queueService.process(
                 new Req("DELETE", "queue", "weather", null)
         );
-        assertThat(result.getText()).isEqualTo("");
+        assertThat(result.getText()).isEqualTo(null);
         assertThat(result.getStatus()).isEqualTo("501");
 
     }

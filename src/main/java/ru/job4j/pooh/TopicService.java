@@ -1,11 +1,10 @@
 package ru.job4j.pooh;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class TopicService implements Service {
-    private final Map<String, ConcurrentHashMap<String, ConcurrentLinkedDeque<String>>>
+    private final ConcurrentHashMap<String, ConcurrentHashMap<String, ConcurrentLinkedDeque<String>>>
             store = new ConcurrentHashMap<>();
 
     @Override
@@ -13,7 +12,7 @@ public class TopicService implements Service {
         String type = req.getHttpRequestType();
         String source = req.getSourceName();
         String param = req.getParam();
-        Resp rsl = new Resp("", ResponseMessage.NOT_IMPL.getValue());
+        Resp rsl = new Resp(req.getParam(), ResponseMessage.NOT_IMPL.getValue());
         if (ResponseMessage.GET.getValue().equals(type)) {
             String status = ResponseMessage.OK.getValue();
             String text;
@@ -23,18 +22,18 @@ public class TopicService implements Service {
             text = answer;
             if (answer == null) {
                 status = ResponseMessage.NOT_FOUND.getValue();
-                text = ResponseMessage.EMPTY.getValue();
+                text = req.getParam();
             }
             rsl = new Resp(text, status);
         } else if (ResponseMessage.POST.getValue().equals(type)) {
             String status;
-            if (store.containsKey(source)) {
-                store.get(source).forEach((key, value) -> value.add(param));
+            if (store.get(req.getSourceName()) != null) {
+                store.get(req.getSourceName()).forEachValue(1, x -> x.add(req.getParam()));
                 status = ResponseMessage.OK.getValue();
             } else {
                 status = ResponseMessage.NOT_FOUND.getValue();
             }
-            rsl = new Resp(ResponseMessage.EMPTY.getValue(), status);
+            rsl = new Resp(req.getParam(), status);
         }
         return rsl;
     }

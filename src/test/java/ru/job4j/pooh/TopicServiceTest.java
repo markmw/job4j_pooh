@@ -29,7 +29,7 @@ public class TopicServiceTest {
                 new Req("GET", "topic", "weather", paramForSubscriber2)
         );
         assertThat(result1.getText()).isEqualTo("temperature=18");
-        assertThat(result2.getText()).isEqualTo("");
+        assertThat(result2.getText()).isEqualTo("client6565");
     }
 
     @Test
@@ -38,7 +38,7 @@ public class TopicServiceTest {
         Resp result = topicService.process(
                 new Req("DELETE", "topic", "weather", null)
         );
-        assertThat(result.getText()).isEqualTo("");
+        assertThat(result.getText()).isEqualTo(null);
         assertThat(result.getStatus()).isEqualTo("501");
     }
 }
