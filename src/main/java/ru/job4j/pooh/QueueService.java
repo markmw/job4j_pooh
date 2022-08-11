@@ -11,14 +11,14 @@ public class QueueService implements Service {
     public Resp process(Req req) {
         String type = req.getHttpRequestType();
         String source = req.getSourceName();
-        Resp rsl = new Resp(req.getParam(), ResponseMessage.NOT_IMPL.getValue());
+        Resp rsl = new Resp("", ResponseMessage.NOT_IMPL.getValue());
         if (ResponseMessage.GET.getValue().equals(type)) {
             String value = store.getOrDefault(source, new ConcurrentLinkedDeque<>()).poll();
             String status = ResponseMessage.OK.getValue();
             String text = value;
             if (value == null) {
                 status = ResponseMessage.NOT_FOUND.getValue();
-                text = req.getParam();
+                text = ResponseMessage.EMPTY.getValue();
             }
             rsl = new Resp(text, status);
         } else if (ResponseMessage.POST.getValue().equals(type)) {

@@ -12,7 +12,7 @@ public class TopicService implements Service {
         String type = req.getHttpRequestType();
         String source = req.getSourceName();
         String param = req.getParam();
-        Resp rsl = new Resp(req.getParam(), ResponseMessage.NOT_IMPL.getValue());
+        Resp rsl = new Resp("", ResponseMessage.NOT_IMPL.getValue());
         if (ResponseMessage.GET.getValue().equals(type)) {
             String status = ResponseMessage.OK.getValue();
             String text;
@@ -22,18 +22,19 @@ public class TopicService implements Service {
             text = answer;
             if (answer == null) {
                 status = ResponseMessage.NOT_FOUND.getValue();
-                text = req.getParam();
+                text = ResponseMessage.EMPTY.getValue();
             }
             rsl = new Resp(text, status);
         } else if (ResponseMessage.POST.getValue().equals(type)) {
+            ConcurrentHashMap<String, ConcurrentLinkedDeque<String>> topic = store.get(req.getSourceName());
             String status;
-            if (store.get(req.getSourceName()) != null) {
-                store.get(req.getSourceName()).forEachValue(1, x -> x.add(req.getParam()));
+            if (topic != null) {
+                topic.forEachValue(1, x -> x.add(req.getParam()));
                 status = ResponseMessage.OK.getValue();
             } else {
                 status = ResponseMessage.NOT_FOUND.getValue();
             }
-            rsl = new Resp(req.getParam(), status);
+            rsl = new Resp(ResponseMessage.EMPTY.getValue(), status);
         }
         return rsl;
     }
